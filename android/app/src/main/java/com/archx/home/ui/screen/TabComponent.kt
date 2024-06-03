@@ -16,6 +16,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 
 
+data class TabBarItem(
+    val title: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val badgeAmount: Int? = null
+)
 
 @Composable
 fun TabView(tabBarItems: List<TabBarItem>, navController: NavController) {

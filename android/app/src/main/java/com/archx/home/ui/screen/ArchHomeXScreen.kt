@@ -1,36 +1,35 @@
 package com.archx.home.ui.screen
 
 import android.annotation.SuppressLint
+import android.view.Gravity
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.archx.home.ui.screen.device_detail.DeviceDetailScreen
+import com.archx.home.ui.screen.device_detail.DeviceDetailViewModel
+import com.archx.home.ui.screen.home.HomeScreen
+import com.archx.home.ui.screen.home.HomeScreenViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,10 +42,10 @@ fun ArchHomeXScreen(modifier: Modifier) {
         unselectedIcon = Icons.Outlined.Home
     )
 
-    val settingsTab = TabBarItem(
-        title = "Settings",
-        selectedIcon = Icons.Filled.Settings,
-        unselectedIcon = Icons.Outlined.Settings
+    val addTab = TabBarItem(
+        title = "Add",
+        selectedIcon = Icons.Filled.Add,
+        unselectedIcon = Icons.Outlined.Add
     )
 
     val notification = TabBarItem(
@@ -56,7 +55,7 @@ fun ArchHomeXScreen(modifier: Modifier) {
         badgeAmount = 7
     )
 
-    val tabBarItems = listOf(homeTab, settingsTab, notification)
+    val tabBarItems = listOf(homeTab, addTab, notification)
     val navController = rememberNavController()
 
 
@@ -76,13 +75,53 @@ private fun MainScreenNavigationConfigurations(
     navController: NavHostController,
     items: List<TabBarItem>,
 ) {
+    val homeScreenViewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory)
+    val deviceDetailViewModel: DeviceDetailViewModel =
+        viewModel(factory = DeviceDetailViewModel.Factory)
+
+    val context = LocalContext.current
+
     NavHost(navController = navController, startDestination = items[0].title) {
         composable(items[0].title) {
-            HomeScreen()
+            HomeScreen(
+                uiState = homeScreenViewModel.uiState,
+                retryAction = homeScreenViewModel::getDevices,
+                modifier = Modifier.fillMaxSize(),
+                onClickCard = { deviceId -> navController.navigate("deviceDetail/$deviceId") },
+                onSwitchChanged = { deviceId, status ->
+                    homeScreenViewModel.changeStatus(
+                        deviceId,
+                        status
+                    )
+                }
+            )
         }
         composable(items[1].title) {
+            Text(text = "Add")
         }
         composable(items[2].title) {
+            Text(text = "Notification")
+        }
+        composable(
+            "deviceDetail/{deviceId}",
+            arguments = listOf(navArgument("deviceId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val deviceId = backStackEntry.arguments?.getString("deviceId") ?: ""
+            deviceDetailViewModel.getDevice(deviceId)
+            DeviceDetailScreen(
+                uiState = deviceDetailViewModel.uiState,
+                retryAction = { deviceDetailViewModel.getDevice(deviceId) },
+                onBack = { navController.popBackStack() },
+                onChangedStatus = { deviceId, status ->
+                    homeScreenViewModel.changeStatus(
+                        deviceId,
+                        status
+                    )
+                    navController.popBackStack()
+                    Toast.makeText(context, "Turn off device successfully", Toast.LENGTH_SHORT).show()
+                },
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
