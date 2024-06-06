@@ -1,15 +1,23 @@
 package com.archx.home.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.archx.home.R
 
+
+@Entity(tableName = "device")
 data class DeviceItem(
-    val id: String,
+
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val category: String,
     val deviceName: String,
     val deviceFactoryName: String,
     val place: String,
     val valueHighlight: String = "",
-    val enabled: Boolean
+    val enabled: Boolean,
+    val metadata: Map<String, String> = emptyMap()
+
+
 ) {
     fun getIconId(): Int {
         when (this.category.lowercase()) {
@@ -29,7 +37,7 @@ data class DeviceItem(
 fun DefaultDeviceItems(): List<DeviceItem> {
     return listOf(
         DeviceItem(
-            id = "1",
+            id = 1,
             category = "speaker",
             deviceName = "Amazon Echo",
             deviceFactoryName = "Amazon",
@@ -37,7 +45,7 @@ fun DefaultDeviceItems(): List<DeviceItem> {
             enabled = true,
         ),
         DeviceItem(
-            id = "2",
+            id = 2,
             category = "thermostat",
             deviceName = "Nest Thermostat",
             deviceFactoryName = "Google",
@@ -45,7 +53,7 @@ fun DefaultDeviceItems(): List<DeviceItem> {
             enabled = true,
         ),
         DeviceItem(
-            id = "3",
+            id = 3,
             category = "tv",
             deviceName = "Samsung QLED TV",
             deviceFactoryName = "Samsung",
@@ -53,7 +61,7 @@ fun DefaultDeviceItems(): List<DeviceItem> {
             enabled = true
         ),
         DeviceItem(
-            id = "4",
+            id = 4,
             category = "lock",
             deviceName = "August Smart Lock Pro",
             deviceFactoryName = "August",
@@ -61,7 +69,7 @@ fun DefaultDeviceItems(): List<DeviceItem> {
             enabled = true
         ),
         DeviceItem(
-            id = "5",
+            id = 5,
             category = "light",
             deviceName = "Philips Hue",
             deviceFactoryName = "Philips",
@@ -69,7 +77,7 @@ fun DefaultDeviceItems(): List<DeviceItem> {
             enabled = false
         ),
         DeviceItem(
-            id = "6",
+            id = 6,
             category = "camera",
             deviceName = "Arlo Pro 3",
             deviceFactoryName = "Arlo",
@@ -77,7 +85,7 @@ fun DefaultDeviceItems(): List<DeviceItem> {
             enabled = true
         ),
         DeviceItem(
-            id = "7",
+            id = 7,
             category = "vacuum",
             deviceName = "Roomba i7+",
             deviceFactoryName = "iRobot",
@@ -85,44 +93,12 @@ fun DefaultDeviceItems(): List<DeviceItem> {
             enabled = true
         ),
         DeviceItem(
-            id = "8",
+            id = 8,
             category = "light",
             deviceName = "LIFX Smart Bulb",
             deviceFactoryName = "LIFX",
             place = "Bedroom",
             enabled = true
         ),
-        DeviceItem(
-            id = "9",
-            category = "speaker",
-            deviceName = "Google Home",
-            deviceFactoryName = "Google",
-            place = "Kitchen",
-            enabled = true
-        ),
-        DeviceItem(
-            id = "10",
-            category = "doorbell",
-            deviceName = "Ring Video Doorbell",
-            deviceFactoryName = "Ring",
-            place = "Front door",
-            enabled = true
-        ),
-        DeviceItem(
-            id = "11",
-            category = "light",
-            deviceName = "Nanoleaf Light Panels",
-            deviceFactoryName = "Nanoleaf",
-            place = "Living room",
-            enabled = true
-        ),
-        DeviceItem(
-            id = "12",
-            category = "speaker",
-            deviceName = "Sonos One",
-            deviceFactoryName = "Sonos",
-            place = "Bedroom",
-            enabled = true
-        )
     )
 }

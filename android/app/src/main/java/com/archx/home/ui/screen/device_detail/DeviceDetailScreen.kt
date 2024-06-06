@@ -113,7 +113,7 @@ fun DeviceDetail(
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = {
-                            onChangedStatus(deviceItem.id, (!deviceItem.enabled).toString())
+                            onChangedStatus(deviceItem.id.toString(), (!deviceItem.enabled).toString())
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = getEnabledColor(deviceItem = deviceItem)
@@ -188,7 +188,7 @@ fun PreviewKeyValueCard() {
 fun Preview() {
     MyApplicationTheme {
         val sample = DeviceItem(
-            id = "1",
+            id = 1,
             category = "speaker",
             deviceName = "Amazon Echo",
             deviceFactoryName = "Amazon",

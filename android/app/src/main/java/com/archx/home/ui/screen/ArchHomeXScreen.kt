@@ -1,7 +1,6 @@
 package com.archx.home.ui.screen
 
 import android.annotation.SuppressLint
-import android.view.Gravity
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +25,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.archx.home.ui.screen.add_device.AddDeviceForm
+import com.archx.home.ui.screen.add_device.AddDeviceViewModel
 import com.archx.home.ui.screen.device_detail.DeviceDetailScreen
 import com.archx.home.ui.screen.device_detail.DeviceDetailViewModel
 import com.archx.home.ui.screen.home.HomeScreen
@@ -79,6 +80,8 @@ private fun MainScreenNavigationConfigurations(
     val deviceDetailViewModel: DeviceDetailViewModel =
         viewModel(factory = DeviceDetailViewModel.Factory)
 
+    val addDeviceViewModel: AddDeviceViewModel = viewModel(factory = AddDeviceViewModel.Factory)
+
     val context = LocalContext.current
 
     NavHost(navController = navController, startDestination = items[0].title) {
@@ -88,16 +91,14 @@ private fun MainScreenNavigationConfigurations(
                 retryAction = homeScreenViewModel::getDevices,
                 modifier = Modifier.fillMaxSize(),
                 onClickCard = { deviceId -> navController.navigate("deviceDetail/$deviceId") },
-                onSwitchChanged = { deviceId, status ->
-                    homeScreenViewModel.changeStatus(
-                        deviceId,
-                        status
-                    )
-                }
+                onSwitchChanged = homeScreenViewModel::changeStatus
             )
         }
         composable(items[1].title) {
-            Text(text = "Add")
+            AddDeviceForm(
+                viewModel = addDeviceViewModel,
+                onDeviceAdded = addDeviceViewModel::createDevice
+            )
         }
         composable(items[2].title) {
             Text(text = "Notification")
@@ -118,7 +119,8 @@ private fun MainScreenNavigationConfigurations(
                         status
                     )
                     navController.popBackStack()
-                    Toast.makeText(context, "Turn off device successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Turn off device successfully", Toast.LENGTH_SHORT)
+                        .show()
                 },
                 modifier = Modifier.fillMaxSize()
             )

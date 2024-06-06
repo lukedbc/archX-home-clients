@@ -51,7 +51,6 @@ fun HomeScreen(
     onSwitchChanged: (deviceId: String, status: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     when (uiState) {
         is HomeScreenUiState.Loading -> LoadingScreen(modifier.size(200.dp))
         is HomeScreenUiState.Success -> DeviceGrid(
@@ -59,10 +58,6 @@ fun HomeScreen(
             onClickCard = onClickCard,
             onSwitchChanged = onSwitchChanged
         )
-
-        is HomeScreenUiState.SuccessChangeStatus ->
-            Toast.makeText(context, "Turn off device successfully", Toast.LENGTH_SHORT).show()
-
         else -> ErrorScreen(retryAction, modifier)
     }
 }
@@ -103,7 +98,7 @@ fun DeviceCard(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .clickable { onClickCard(item.id) },
+            .clickable { onClickCard(item.id.toString()) },
         elevation = CardDefaults.cardElevation(8.dp),
     ) {
         Column(
@@ -127,7 +122,7 @@ fun DeviceCard(
                     checked = isChecked,
                     onCheckedChange = {
                         isChecked = it
-                        onSwitchChanged(item.id, isChecked.toString())
+                        onSwitchChanged(item.id.toString(), isChecked.toString())
                     },
                 )
             }

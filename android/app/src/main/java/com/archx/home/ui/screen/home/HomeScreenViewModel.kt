@@ -12,18 +12,20 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.archx.home.ArchHomeXApplication
+import com.archx.home.data.DeviceRepository
+import com.archx.home.data.InternalDeviceRepository
 import com.archx.home.model.DefaultDeviceItems
 import com.archx.home.model.DeviceItem
 import kotlinx.coroutines.launch
 
 sealed interface HomeScreenUiState {
     data class Success(val devices: List<DeviceItem>) : HomeScreenUiState
-    data class SuccessChangeStatus(val device: DeviceItem): HomeScreenUiState
+    data class SuccessChangeStatus(val device: DeviceItem) : HomeScreenUiState
     object Error : HomeScreenUiState
     object Loading : HomeScreenUiState
 }
 
-class HomeScreenViewModel() : ViewModel() {
+class HomeScreenViewModel(private val repository: DeviceRepository) : ViewModel() {
     var uiState: HomeScreenUiState by mutableStateOf(HomeScreenUiState.Loading)
         private set
 
@@ -36,7 +38,7 @@ class HomeScreenViewModel() : ViewModel() {
         viewModelScope.launch {
             uiState = HomeScreenUiState.Loading
             uiState = try {
-                HomeScreenUiState.Success(DefaultDeviceItems())
+                HomeScreenUiState.Success(repository.getDevices())
             } catch (e: Exception) {
                 HomeScreenUiState.Error
             }
@@ -45,12 +47,7 @@ class HomeScreenViewModel() : ViewModel() {
 
     fun changeStatus(deviceId: String, status: String) {
         viewModelScope.launch {
-            uiState = HomeScreenUiState.Loading
-            uiState = try {
-                HomeScreenUiState.SuccessChangeStatus(DefaultDeviceItems().get(0))
-            } catch (e: Exception) {
-                HomeScreenUiState.Error
-            }
+            changeStatus(deviceId, status)
         }
     }
 
@@ -60,7 +57,7 @@ class HomeScreenViewModel() : ViewModel() {
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                         as ArchHomeXApplication)
 
-                HomeScreenViewModel()
+                HomeScreenViewModel(application.container.deviceRepository)
 
             }
         }
