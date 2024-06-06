@@ -37,6 +37,12 @@ class DeviceDetailViewModel(private val repository: DeviceRepository) : ViewMode
         }
     }
 
+    fun changeStatus(deviceId: String, status: String) {
+        viewModelScope.launch {
+            repository.changeStatus(deviceId, status)
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

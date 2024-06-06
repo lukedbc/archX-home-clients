@@ -29,11 +29,6 @@ class HomeScreenViewModel(private val repository: DeviceRepository) : ViewModel(
     var uiState: HomeScreenUiState by mutableStateOf(HomeScreenUiState.Loading)
         private set
 
-    init {
-        // load devices from databases
-        getDevices()
-    }
-
     fun getDevices() {
         viewModelScope.launch {
             uiState = HomeScreenUiState.Loading
@@ -47,7 +42,7 @@ class HomeScreenViewModel(private val repository: DeviceRepository) : ViewModel(
 
     fun changeStatus(deviceId: String, status: String) {
         viewModelScope.launch {
-            changeStatus(deviceId, status)
+            repository.changeStatus(deviceId, status)
         }
     }
 

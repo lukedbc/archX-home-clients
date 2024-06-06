@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.archx.home.model.DefaultDeviceItems
 import com.archx.home.model.DeviceItem
 
 @Dao
@@ -17,6 +16,9 @@ interface DeviceDao {
 
     @Query("SELECT * FROM device WHERE id = :id")
     suspend fun getDevice(id: Long): DeviceItem
+
+    @Query("UPDATE device SET enabled = :status WHERE id = :id")
+    suspend fun changeStatus(id: Long, status: Boolean)
 }
 
 
@@ -42,7 +44,8 @@ class InternalDeviceRepository(private val appDatabase: AppDatabase) : DeviceRep
     }
 
     override suspend fun changeStatus(deviceId: String, status: String): Boolean {
-        return false
+        deviceDao.changeStatus(deviceId.toLong(), status.toBoolean())
+        return true
     }
 
     override suspend fun addDevice(item: DeviceItem): Boolean {

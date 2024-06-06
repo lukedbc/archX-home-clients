@@ -92,7 +92,9 @@ fun AddDeviceForm(viewModel: AddDeviceViewModel, onDeviceAdded: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.createDevice() },
+            onClick = {
+                onDeviceAdded()
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text("Add Device")

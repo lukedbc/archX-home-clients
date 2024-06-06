@@ -30,8 +30,8 @@ data class DeviceItem(
         }
     }
 
-    fun getMetaData(): Boolean {
-        return false
+    fun hasMetaData(): Boolean {
+        return !this.metadata.isEmpty()
     }
 }
 fun DefaultDeviceItems(): List<DeviceItem> {

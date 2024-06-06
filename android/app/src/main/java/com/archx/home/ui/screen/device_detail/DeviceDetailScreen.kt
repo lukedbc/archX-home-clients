@@ -133,15 +133,8 @@ fun DeviceDetail(
                     }
                 }
             }
-            val hasMetaData = deviceItem.getMetaData()
-            if (hasMetaData) {
-                val sampleData = mapOf(
-                    "Name" to "John Doe",
-                    "Age" to "30",
-                    "Occupation" to "Software Engineer",
-                    "Country" to "USA"
-                )
-                KeyValueCard(keyValuePairs = sampleData)
+            if (deviceItem.hasMetaData()) {
+                KeyValueCard(keyValuePairs = deviceItem.metadata)
             }
         }
     }

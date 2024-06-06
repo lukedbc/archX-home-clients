@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -86,6 +87,9 @@ private fun MainScreenNavigationConfigurations(
 
     NavHost(navController = navController, startDestination = items[0].title) {
         composable(items[0].title) {
+            LaunchedEffect(Unit) {
+                homeScreenViewModel.getDevices()
+            }
             HomeScreen(
                 uiState = homeScreenViewModel.uiState,
                 retryAction = homeScreenViewModel::getDevices,
@@ -97,7 +101,12 @@ private fun MainScreenNavigationConfigurations(
         composable(items[1].title) {
             AddDeviceForm(
                 viewModel = addDeviceViewModel,
-                onDeviceAdded = addDeviceViewModel::createDevice
+                onDeviceAdded = {
+                    addDeviceViewModel.createDevice()
+                    navController.navigate("Home")
+                    Toast.makeText(context, "Added device successfully", Toast.LENGTH_SHORT)
+                        .show()
+                }
             )
         }
         composable(items[2].title) {
@@ -108,13 +117,15 @@ private fun MainScreenNavigationConfigurations(
             arguments = listOf(navArgument("deviceId") { type = NavType.StringType })
         ) { backStackEntry ->
             val deviceId = backStackEntry.arguments?.getString("deviceId") ?: ""
-            deviceDetailViewModel.getDevice(deviceId)
+            LaunchedEffect(deviceId) {
+                deviceDetailViewModel.getDevice(deviceId)
+            }
             DeviceDetailScreen(
                 uiState = deviceDetailViewModel.uiState,
                 retryAction = { deviceDetailViewModel.getDevice(deviceId) },
                 onBack = { navController.popBackStack() },
                 onChangedStatus = { deviceId, status ->
-                    homeScreenViewModel.changeStatus(
+                    deviceDetailViewModel.changeStatus(
                         deviceId,
                         status
                     )
