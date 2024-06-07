@@ -106,6 +106,7 @@ private fun MainScreenNavigationConfigurations(
                     navController.navigate("Home")
                     Toast.makeText(context, "Added device successfully", Toast.LENGTH_SHORT)
                         .show()
+                    addDeviceViewModel.reset()
                 }
             )
         }

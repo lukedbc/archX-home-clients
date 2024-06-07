@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.archx.home.data.remote.DeviceApi
+import com.archx.home.data.remote.DeviceApiService
 import com.archx.home.model.DeviceItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -45,12 +47,16 @@ class Converters {
 }
 
 interface AppContainer {
-    val deviceRepository: DeviceRepository
+    val internalDeviceRepository: DeviceRepository
+    val remoteDeviceRepository: DeviceRepository
 }
 
-class DefaultAppContainer(database: AppDatabase) : AppContainer {
+class DefaultAppContainer(database: AppDatabase, deviceApiService: DeviceApi) : AppContainer {
 
-    override val deviceRepository: DeviceRepository by lazy {
+    override val internalDeviceRepository: DeviceRepository by lazy {
         InternalDeviceRepository(database);
+    }
+    override val remoteDeviceRepository: DeviceRepository by lazy {
+        NetworkDeviceRepository(deviceApiService)
     }
 }

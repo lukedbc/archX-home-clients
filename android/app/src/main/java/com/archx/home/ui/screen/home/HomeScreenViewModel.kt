@@ -1,11 +1,8 @@
 package com.archx.home.ui.screen.home
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,8 +10,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.archx.home.ArchHomeXApplication
 import com.archx.home.data.DeviceRepository
-import com.archx.home.data.InternalDeviceRepository
-import com.archx.home.model.DefaultDeviceItems
 import com.archx.home.model.DeviceItem
 import kotlinx.coroutines.launch
 
@@ -52,8 +47,7 @@ class HomeScreenViewModel(private val repository: DeviceRepository) : ViewModel(
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                         as ArchHomeXApplication)
 
-                HomeScreenViewModel(application.container.deviceRepository)
-
+                HomeScreenViewModel(application.container.remoteDeviceRepository)
             }
         }
     }

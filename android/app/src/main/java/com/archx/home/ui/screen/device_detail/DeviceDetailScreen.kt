@@ -181,7 +181,7 @@ fun PreviewKeyValueCard() {
 fun Preview() {
     MyApplicationTheme {
         val sample = DeviceItem(
-            id = 1,
+            id = "1",
             category = "speaker",
             deviceName = "Amazon Echo",
             deviceFactoryName = "Amazon",

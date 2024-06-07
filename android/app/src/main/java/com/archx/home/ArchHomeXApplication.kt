@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.archx.home.data.AppContainer
 import com.archx.home.data.AppDatabase
 import com.archx.home.data.DefaultAppContainer
+import com.archx.home.data.remote.DeviceApi
 
 class ArchHomeXApplication: Application() {
 
@@ -15,6 +16,6 @@ class ArchHomeXApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        container = DefaultAppContainer(database)
+        container = DefaultAppContainer(database, DeviceApi)
     }
 }

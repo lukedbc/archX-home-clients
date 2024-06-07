@@ -11,14 +11,23 @@ import com.archx.home.model.DeviceItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID.randomUUID
 
 data class DeviceFormState(
-    val category: String = "",
-    val deviceName: String = "",
-    val deviceFactoryName: String = "",
-    val place: String = "",
-    val metadata: Map<String, String> = emptyMap()
-)
+    var category: String = "",
+    var deviceName: String = "",
+    var deviceFactoryName: String = "",
+    var place: String = "",
+    var metadata: Map<String, String> = emptyMap()
+) {
+    fun reset() {
+        this.deviceName = ""
+        this.category = ""
+        this.deviceFactoryName = ""
+        this.place = ""
+        this.metadata = emptyMap()
+    }
+}
 
 class AddDeviceViewModel(private val repository: DeviceRepository) : ViewModel() {
     private val _formState = MutableStateFlow(DeviceFormState())
@@ -46,10 +55,15 @@ class AddDeviceViewModel(private val repository: DeviceRepository) : ViewModel()
         _formState.value = _formState.value.copy(metadata = updatedMetadata)
     }
 
+    fun reset() {
+        formState.value.reset()
+    }
+
     fun createDevice() {
         viewModelScope.launch {
             val formState = _formState.value
             val newDevice = DeviceItem(
+                id = randomUUID().toString() ,
                 category = formState.category,
                 deviceName = formState.deviceName,
                 deviceFactoryName = formState.deviceFactoryName,
@@ -69,7 +83,7 @@ class AddDeviceViewModel(private val repository: DeviceRepository) : ViewModel()
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                         as ArchHomeXApplication)
 
-                AddDeviceViewModel(application.container.deviceRepository)
+                AddDeviceViewModel(application.container.remoteDeviceRepository)
             }
         }
     }

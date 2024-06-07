@@ -10,7 +10,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.archx.home.ArchHomeXApplication
 import com.archx.home.data.DeviceRepository
-import com.archx.home.model.DefaultDeviceItems
 import com.archx.home.model.DeviceItem
 import kotlinx.coroutines.launch
 
@@ -49,7 +48,7 @@ class DeviceDetailViewModel(private val repository: DeviceRepository) : ViewMode
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                         as ArchHomeXApplication)
 
-                DeviceDetailViewModel(application.container.deviceRepository)
+                DeviceDetailViewModel(application.container.remoteDeviceRepository)
             }
         }
     }

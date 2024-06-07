@@ -47,7 +47,7 @@ fun TabView(tabBarItems: List<TabBarItem>, navController: NavController) {
                         badgeAmount = tabBarItem.badgeAmount
                     )
                 },
-                label = {Text(tabBarItem.title)})
+                label = { Text(tabBarItem.title) })
         }
     }
 }
@@ -65,14 +65,16 @@ fun TabBarIconView(
 ) {
     BadgedBox(badge = { TabBarBadgeView(badgeAmount) }) {
         Icon(
-            imageVector = if (isSelected) {selectedIcon} else {unselectedIcon},
+            imageVector = if (isSelected) {
+                selectedIcon
+            } else {
+                unselectedIcon
+            },
             contentDescription = title
         )
     }
 }
 
-// This component helps to clean up the API call from our TabBarIconView above,
-// but could just as easily be added inside the TabBarIconView without creating this custom component
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TabBarBadgeView(count: Int? = null) {
